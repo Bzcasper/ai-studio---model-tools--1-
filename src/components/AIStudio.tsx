@@ -169,23 +169,20 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
 
     let sandbox: Sandbox | null = null;
     try {
-        sandbox = await Sandbox.create({ template: 'base', apiKey: e2bApiKey });
+        sandbox = await Sandbox.create('base', { apiKey: e2bApiKey });
 
-        await sandbox.fs.write(langConfig.filename, code);
+        await sandbox.files.write(langConfig.filename, code);
         
-        const proc = await sandbox.proc.start({
-            cmd: `${langConfig.command} ${langConfig.filename}`,
-            onStdout: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, output: prev.get(blockId)!.output + data.line + '\n' })),
-            onStderr: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: prev.get(blockId)!.error + data.line + '\n' })),
+        await sandbox.commands.run(`${langConfig.command} ${langConfig.filename}`, {
+            onStdout: (data: any) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, output: prev.get(blockId)!.output + data.line + '\n' })),
+            onStderr: (data: any) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: prev.get(blockId)!.error + data.line + '\n' })),
         });
-
-        await proc.wait;
 
     } catch (e: any) {
         console.error("E2B execution failed:", e);
         setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: `Execution failed: ${e.message}` }));
     } finally {
-        if (sandbox) await sandbox.close();
+        if (sandbox) await sandbox.kill();
         setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, isRunning: false }));
     }
   };
@@ -216,17 +213,17 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
         ) : (
             <div className="space-y-6">
             {messages.map((msg, msgIndex) => {
-                const parts = msg.role === 'model' ? parseMessageContent(msg.content) : [{type: 'text', content: msg.content}];
+                const parts = msg.role === 'model' ? parseMessageContent(msg.content) : [{type: 'text' as const, content: msg.content}];
                 return (
                     <div key={msgIndex} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                         {msg.role === 'model' && ( <div className="flex-shrink-0 h-8 w-8 rounded-full bg-cyan-900 flex items-center justify-center"> <WandIcon className="h-5 w-5 text-cyan-400" /> </div> )}
                         
                         <div className={`max-w-xl lg:max-w-2xl rounded-xl ${msg.role === 'user' ? 'bg-cyan-600 text-white px-4 py-3' : 'bg-transparent'}`}>
                           {parts.map((part, partIndex) => {
-                            if (part.type === 'code' && part.language) {
+                            if (part.type === 'code' && 'language' in part && part.language) {
                                 const blockId = `${msgIndex}-${partIndex}`;
                                 const state = executionState.get(blockId) || { isRunning: false, output: '', error: '', artifacts: []};
-                                return <CodeExecutionBlock key={partIndex} language={part.language} code={part.content} onRun={() => handleRunCode(msgIndex, partIndex, part.language!, part.content)} {...state} />;
+                                return <CodeExecutionBlock key={partIndex} language={(part as any).language} code={part.content} onRun={() => handleRunCode(msgIndex, partIndex, (part as any).language!, part.content)} {...state} />;
                             }
                             return <div key={partIndex} className={msg.role === 'model' ? 'bg-gray-700 text-gray-200 px-4 py-3 rounded-xl' : ''}>
                                 <MarkdownRenderer content={part.content + (isLoading && msgIndex === messages.length - 1 && partIndex === parts.length - 1 ? '...' : '')} />

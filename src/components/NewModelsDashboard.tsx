@@ -63,7 +63,10 @@ const NewModelsDashboard: React.FC<NewModelsDashboardProps> = ({ onSelectModel, 
             }
         });
 
-        const jsonText = response.text.trim();
+        const jsonText = response.text?.trim();
+        if (!jsonText) {
+            throw new Error("No response text received from API");
+        }
         const parsedResults: NewModel[] = JSON.parse(jsonText);
         parsedResults.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
         setModels(parsedResults);

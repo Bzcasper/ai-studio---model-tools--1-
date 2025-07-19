@@ -74,7 +74,10 @@ const LoraFinderForm: React.FC<LoraFinderFormProps> = ({ geminiApiKey, model }) 
         }
       });
       
-      const jsonText = response.text.trim();
+      const jsonText = response.text?.trim();
+      if (!jsonText) {
+        throw new Error("No response text received from API");
+      }
       const parsedResults = JSON.parse(jsonText);
       setResults(parsedResults);
 

@@ -20,7 +20,6 @@ const CodeExecutionBlock: React.FC<CodeExecutionBlockProps> = ({
   onRun,
   output,
   error,
-  artifacts,
   isRunning,
 }) => {
   const formattedCode = '```' + language + '\n' + code + '\n```';
