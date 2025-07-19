@@ -38,8 +38,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ title, code }) => {
           )}
         </button>
       </div>
-      <div className="p-4 overflow-x-auto h-full">
-        <pre className="text-sm font-mono text-gray-200 whitespace-pre-wrap">
+      <div className="p-4 overflow-x-auto h-full custom-scrollbar">
+        <pre className="text-sm font-mono text-gray-200 whitespace-pre">
           <code>{code}</code>
         </pre>
       </div>

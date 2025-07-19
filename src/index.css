@@ -1,4 +1,6 @@
 
+@import url('https://rsms.me/inter/inter.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +8,6 @@
 body {
   font-family: 'Inter', sans-serif;
 }
-@import url('https://rsms.me/inter/inter.css');
 
 /* Custom scrollbar for chat */
 .custom-scrollbar::-webkit-scrollbar {

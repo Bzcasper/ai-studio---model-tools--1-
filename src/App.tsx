@@ -80,7 +80,7 @@ const App: React.FC = () => {
             setRequirements('');
             setSelectedModel(null);
         }}
-        className={`px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold rounded-t-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-400 flex items-center gap-2 ${
+        className={`flex-shrink-0 px-3 md:px-6 py-3 text-sm sm:text-base font-semibold rounded-t-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-400 flex items-center gap-2 ${
           isActive
             ? 'bg-gray-800 text-cyan-400 border-b-2 border-cyan-400'
             : 'bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-gray-200'
@@ -123,7 +123,7 @@ const App: React.FC = () => {
         </header>
 
         <main className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-2xl shadow-cyan-500/10 border border-gray-700">
-          <div className="flex border-b border-gray-700 overflow-x-auto">
+          <div className="flex border-b border-gray-700 overflow-x-auto custom-scrollbar">
              <TabButton currentMode={mode} targetMode={DownloadMode.AIStudio} onClick={setMode}>
               <WandIcon className="h-5 w-5"/> AI Studio
             </TabButton>

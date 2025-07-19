@@ -1,4 +1,4 @@
-npm
+
 {
 	"name": "AI Studio Dev Container",
 	"dockerComposeFile": "../docker-compose.yml",

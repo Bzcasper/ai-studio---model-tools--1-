@@ -107,7 +107,7 @@ const NewModelsDashboard: React.FC<NewModelsDashboardProps> = ({ onSelectModel, 
               <div className="w-1/3 text-xs font-mono text-gray-400 truncate text-right pr-2" title={model.repoId}>{model.repoId.split('/')[1] || model.repoId}</div>
               <div className="w-2/3 bg-gray-700 rounded-full h-6">
                 <div
-                  className="bg-cyan-600 h-6 rounded-full flex items-center justify-end px-2 text-sm font-bold text-white transition-all duration-500"
+                  className="bg-cyan-600 group-hover:bg-cyan-500 h-6 rounded-full flex items-center justify-end px-2 text-sm font-bold text-white transition-all duration-300 transform group-hover:scale-x-105 origin-left"
                   style={{ width: `${(model.parameterSize / maxParamSize) * 100}%` }}
                 >
                   {model.parameterSize}B
@@ -122,7 +122,7 @@ const NewModelsDashboard: React.FC<NewModelsDashboardProps> = ({ onSelectModel, 
         <h3 className="text-xl font-semibold mb-4 text-center text-cyan-300">Latest Model Releases</h3>
         <div className="space-y-4">
           {models.map((model, index) => (
-            <div key={index} className="bg-gray-900/50 p-4 rounded-lg border border-gray-700 shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div key={index} className="bg-gray-900/50 p-4 rounded-lg border border-gray-700 shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-200 hover:border-cyan-600/70 hover:shadow-lg hover:shadow-cyan-500/10 transform hover:scale-[1.02]">
               <div className="flex-grow">
                 <p className="font-semibold text-cyan-400 font-mono">{model.repoId}</p>
                 <p className="text-sm text-gray-400 font-mono mb-2">{model.filename}</p>

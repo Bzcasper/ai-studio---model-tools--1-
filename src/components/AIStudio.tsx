@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
-import Session from '@e2b/sdk';
+import { Sandbox } from '@e2b/sdk';
 import { ModelFamily } from '../types';
 
 import MarkdownRenderer from './MarkdownRenderer';
@@ -131,7 +131,6 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
         });
       }
     } catch (err: any) {
-      console.error("Gemini API call failed:", err);
       const errorMessage = `An error occurred with the Gemini API: ${err.message}. Check your key and permissions.`;
       setError(errorMessage);
        setMessages(prev => {
@@ -168,16 +167,16 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
 
     setExecutionState(prev => new Map(prev).set(blockId, { isRunning: true, output: '', error: '', artifacts: [] }));
 
-    let session: Session | null = null;
+    let sandbox: Sandbox | null = null;
     try {
-        session = await Session.create({ id: 'base', apiKey: e2bApiKey });
+        sandbox = await Sandbox.create({ template: 'base', apiKey: e2bApiKey });
 
-        await session.filesystem.write(langConfig.filename, code);
+        await sandbox.fs.write(langConfig.filename, code);
         
-        const proc = await session.process.start({
+        const proc = await sandbox.proc.start({
             cmd: `${langConfig.command} ${langConfig.filename}`,
-            onStdout: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, output: prev.get(blockId)!.output + data.line + '\\n' })),
-            onStderr: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: prev.get(blockId)!.error + data.line + '\\n' })),
+            onStdout: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, output: prev.get(blockId)!.output + data.line + '\n' })),
+            onStderr: (data) => setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: prev.get(blockId)!.error + data.line + '\n' })),
         });
 
         await proc.wait;
@@ -186,7 +185,7 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
         console.error("E2B execution failed:", e);
         setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, error: `Execution failed: ${e.message}` }));
     } finally {
-        if (session) await session.close();
+        if (sandbox) await sandbox.close();
         setExecutionState(prev => new Map(prev).set(blockId, { ...prev.get(blockId)!, isRunning: false }));
     }
   };
@@ -246,7 +245,7 @@ const AIStudio: React.FC<AIStudioProps> = ({ geminiApiKey, e2bApiKey, model }) =
 
       <div className="p-4 border-t border-gray-700 flex-shrink-0">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-          <textarea value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e as any); } }} placeholder="Ask me to design a component, write a function, or explain a concept..." rows={1} className="flex-grow resize-none bg-gray-800 border-gray-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition" disabled={isLoading || !geminiApiKey} />
+          <textarea value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e as any); } }} placeholder="Ask me to design a component, write a function, or explain a concept..." rows={3} className="flex-grow resize-none bg-gray-800 border-gray-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition max-h-48" disabled={isLoading || !geminiApiKey} />
           <button type="submit" disabled={isLoading || !userInput.trim() || !geminiApiKey} className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:bg-cyan-800 disabled:cursor-not-allowed flex-shrink-0">
             {isLoading ? <Spinner className="h-5 w-5"/> : 'Send'}
           </button>

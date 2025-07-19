@@ -131,7 +131,7 @@ const LoraFinderForm: React.FC<LoraFinderFormProps> = ({ geminiApiKey, model }) 
         <div className="space-y-4 animate-fade-in">
            <h3 className="text-xl font-semibold text-center text-cyan-300">Recommended LoRA Adapters</h3>
            {results.map((lora, index) => (
-             <div key={index} className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+             <div key={index} className="bg-gray-900/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-200 hover:border-cyan-600/70 hover:shadow-lg hover:shadow-cyan-500/10 transform hover:scale-[1.02]">
                <div className="flex-grow">
                  <p className="font-semibold text-cyan-400 font-mono">{lora.repoId}</p>
                  <p className="text-sm text-gray-400 font-mono mb-2">{lora.filename}</p>

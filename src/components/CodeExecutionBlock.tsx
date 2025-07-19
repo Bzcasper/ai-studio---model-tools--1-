@@ -23,7 +23,7 @@ const CodeExecutionBlock: React.FC<CodeExecutionBlockProps> = ({
   artifacts,
   isRunning,
 }) => {
-  const formattedCode = '```' + language + '\\n' + code + '\\n```';
+  const formattedCode = '```' + language + '\n' + code + '\n```';
 
   return (
     <div className="bg-gray-900/70 border border-gray-700 rounded-lg shadow-lg my-4">
@@ -48,7 +48,7 @@ const CodeExecutionBlock: React.FC<CodeExecutionBlockProps> = ({
           )}
         </button>
       </div>
-      <div className="p-4 bg-gray-800/30">
+      <div className="p-4 bg-gray-800/30 overflow-x-auto custom-scrollbar [&_pre]:whitespace-pre">
         <MarkdownRenderer content={formattedCode} />
       </div>
       {(output || error || (isRunning && !output && !error)) && (
@@ -58,12 +58,12 @@ const CodeExecutionBlock: React.FC<CodeExecutionBlockProps> = ({
              <p className="text-sm text-gray-500 italic">Executing code in sandbox...</p>
           )}
           {output && (
-            <pre className="text-sm font-mono text-gray-300 whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
+            <pre className="text-sm font-mono text-gray-300 whitespace-pre-wrap max-h-96 overflow-y-auto custom-scrollbar">
               <code>{output}</code>
             </pre>
           )}
           {error && (
-            <pre className="text-sm font-mono text-red-400 whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
+            <pre className="text-sm font-mono text-red-400 whitespace-pre-wrap max-h-96 overflow-y-auto custom-scrollbar">
               <code>{error}</code>
             </pre>
           )}
