@@ -1,0 +1,6 @@
+{
+  "name": "AI Studio & Model Tools",
+  "description": "An interactive AI Studio to build and execute code with Gemini. Features tools to find, download, and script GGUF models and LoRA adapters. Includes a settings panel to manage API keys and select models.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
